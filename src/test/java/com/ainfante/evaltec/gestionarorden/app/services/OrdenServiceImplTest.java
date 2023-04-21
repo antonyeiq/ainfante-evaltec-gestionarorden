@@ -1,39 +1,37 @@
 package com.ainfante.evaltec.gestionarorden.app.services;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
+
+import com.ainfante.evaltec.gestionarorden.app.models.Orden;
+import com.ainfante.evaltec.gestionarorden.app.repositories.OrdenRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-
-import com.ainfante.evaltec.gestionarorden.app.models.ItemOrden;
-import com.ainfante.evaltec.gestionarorden.app.models.Orden;
-import com.ainfante.evaltec.gestionarorden.app.repositories.OrdenRepository;
-
-
 @SpringBootTest
 class OrdenServiceImplTest {
 	
-	@MockBean
+	@Mock
 	OrdenRepository ordenRepository;
 
-	@Autowired
-	OrdenService ordenService;
+	@InjectMocks
+	OrdenServiceImpl ordenService;
 	
 	@BeforeEach
-	void setUp() throws Exception {
+	void setUp()  {
 	}
 
 	@Test
 	void testFindById() {	
-		when(ordenService.findById(anyString())).thenReturn(Optional.of(new Orden()));
+		when(ordenRepository.findById(anyString())).thenReturn(Optional.of(new Orden()));
+		ordenService.findById(anyString());
 	}
 
 	@Test
@@ -43,10 +41,16 @@ class OrdenServiceImplTest {
 		orden.setEstado("Pagado");
 		orden.setFechaPedido(new Date());
 		orden.setFormaPago("Contado");
-		orden.setItemsOrden(new ArrayList<ItemOrden>());
+		orden.setItemsOrden(new ArrayList<>());
 		
-		when(ordenService.save(orden)).thenReturn(orden);
+		when(ordenRepository.save(orden)).thenReturn(orden);
+		ordenService.save(orden);
 		verify(ordenRepository, never()).deleteById(anyString());
-	}	
+	}
 
+	@Test
+	void deleteById() {
+		//doNothing().when(ordenRepository).deleteById(anyString());
+		ordenService.deleteById(anyString());
+	}
 }
